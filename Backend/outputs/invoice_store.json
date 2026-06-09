@@ -1,0 +1,22 @@
+{
+  "vendors": [
+    "abc electronics ltd",
+    "al-hashmi trading llc",
+    "al rashid trading llc",
+    "al-faisal trading est.",
+    "global trading company",
+    "techsupply corp.",
+    "pakistan electronics store",
+    "mega procurement services",
+    "rehman hardware store",
+    "office supplies hub",
+    "technova solutions pvt ltd",
+    "datastream technologies",
+    "rainbow office supplies",
+    "nexus procurement services"
+  ],
+  "invoices": {
+    "inv-2025-00501": "phase1_clean_digital.pdf",
+    "ds-2025-0089": "phase2_scanned_good.pdf"
+  }
+}

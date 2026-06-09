@@ -1,0 +1,620 @@
+(.venv) PS C:\Users\mhash\Desktop\Web\.Wapexp\2 In-progress projects\invoice-rpa-firebase\invoice-rpa\Backend> & "c:\Users\mhash\Desktop\Web\.Wapexp\2 In-progress projects\invoice-rpa-firebase\invoice-rpa\Backend\.venv\Scripts\python.exe" "c:/Users/mhash/Desktop/Web/.Wapexp/2 In-progress projects/invoice-rpa-firebase/invoice-rpa/Backend/main.py"
+
+  ██╗███╗   ██╗██╗   ██╗ ██████╗ ██╗ ██████╗███████╗
+  ██║████╗  ██║██║   ██║██╔═══██╗██║██╔════╝██╔════╝
+  ██║██╔██╗ ██║██║   ██║██║   ██║██║██║     █████╗
+  ██║██║╚██╗██║╚██╗ ██╔╝██║   ██║██║██║     ██╔══╝
+  ██║██║ ╚████║ ╚████╔╝ ╚██████╔╝██║╚██████╗███████╗
+  ╚═╝╚═╝  ╚═══╝  ╚═══╝   ╚═════╝ ╚═╝ ╚═════╝╚══════╝
+
+  Intelligent RPA — Accounts Payable Invoice Extraction
+  Powered by Qwen2.5-VL via Groq (free) + Ollama fallback
+
+  ✓  Groq API key loaded: gsk_bBm1••••••••IDap
+
+╭────────────────────────────────────── 📂 Upload Invoice ───────────────────────────────────────╮
+│   Supported formats: .bmp, .jpeg, .jpg, .pdf, .png, .tiff, .webp                               │
+│                                                                                                │
+│   Enter the full path to your invoice file.                                                    │
+│   (You can drag & drop the file into the terminal on most systems)                             │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  Invoice file path: C:\Users\mhash\Desktop\Web\.Wapexp\2 In-progress projects\invoice-rpa-firebase\invoice-rpa\Backend\phase1_clean_digital.pdf
+
+  ✓  File accepted: phase1_clean_digital.pdf (0.00 MB)
+
+╭──────────────────────────────────────── ⚙  Processing ─────────────────────────────────────────╮
+│   Running 6-step pipeline on: phase1_clean_digital.pdf                                         │
+│                                                                                                │
+│   Step 1 → Invoice ingested                                                                    │
+│   Step 2 → PDF/image preprocessing…                                                            │
+│   Step 3 → AI extraction (Groq / Ollama)…                                                      │
+│   Step 4 → Validation & confidence scoring…                                                    │
+│   Step 5 → Confidence routing…                                                                 │
+│   Step 6 → Feedback loop ready                                                                 │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+18:11:15  INFO      [Pipeline] Step 2 — Preprocessing 'phase1_clean_digital.pdf'…
+18:11:16  INFO      [Preprocess] PDF rendered via PyMuPDF at 300 DPI
+18:11:16  INFO      [Preprocess] Original size: (2481, 3508)
+18:11:26  INFO      [Preprocess] Final size:    (2400, 3393)
+18:11:26  INFO      [Pipeline] Step 3 — Extracting invoice data via AI…
+18:11:27  INFO      [Extractor] Groq attempt 1/3 — model: meta-llama/llama-4-scout-17b-16e-instruct
+18:11:30  INFO      HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+18:11:30  INFO      [Pipeline] Step 4 — Validating & scoring confidence…
+18:11:30  INFO      [Pipeline] Step 5 — Routing based on confidence…
+18:11:30  INFO      [Router] → AUTO_POST (95.4%)
+18:11:30  INFO      [Pipeline] ✓ Done — status=SUCCESS, confidence=95.4%, route=AUTO_POST
+
+─────────────────────────────────── INVOICE EXTRACTION RESULT ────────────────────────────────────
+╭───────────────────────────────────────── 📄 Overview ──────────────────────────────────────────╮
+│   File        : phase1_clean_digital.pdf                                                       │
+│   Processed   : 2026-06-05T18:11:15.493524                                                     │
+│   Model       : meta-llama/llama-4-scout-17b-16e-instruct  (attempts: 1)                       │
+│   Status      : SUCCESS                                                                        │
+│   Route       : ✅ AUTO_POST                                                                   │
+│   Reason      : Confidence 95.4% ≥ 95% threshold. Safe to auto-post to ERP.                    │
+│                                                                                                │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────────── 🔍 Extracted Fields ──────────────────────────────────────╮
+│ ╭─────────────────────────┬────────────────────────────────────────┬──────────────┬──────────╮ │
+│ │ Field                   │ Extracted Value                        │  Confidence  │  Level   │ │
+│ ├─────────────────────────┼────────────────────────────────────────┼──────────────┼──────────┤ │
+│ │ Vendor Name             │ ABC Electronics Ltd                    │    92.0%     │  MEDIUM  │ │
+│ │ Vendor Address          │ 123 Tech Street, Karachi, Pakistan     │    80.0%     │  MEDIUM  │ │
+│ │ Vendor Tax ID           │ —                                      │    50.0%     │   LOW    │ │
+│ │ Invoice Number          │ INV-2024-00123                         │    93.0%     │  MEDIUM  │ │
+│ │ Invoice Date            │ 2024-01-15                             │    95.0%     │   HIGH   │ │
+│ │ Due Date                │ 2024-02-15                             │    95.0%     │   HIGH   │ │
+│ │ PO Number               │ PO-98765                               │    80.0%     │  MEDIUM  │ │
+│ │ Payment Terms           │ Payment due within 30 days.            │    80.0%     │  MEDIUM  │ │
+│ │ Currency                │ PKR                                    │    97.0%     │   HIGH   │ │
+│ │ Subtotal                │ PKR 10,000.00                          │    96.0%     │   HIGH   │ │
+│ │ Tax Rate                │ 17.0%                                  │    80.0%     │  MEDIUM  │ │
+│ │ Tax Amount              │ PKR 1,700.00                           │    96.0%     │   HIGH   │ │
+│ │ Total Amount            │ PKR 11,700.00                          │    96.0%     │   HIGH   │ │
+│ ╰─────────────────────────┴────────────────────────────────────────┴──────────────┴──────────╯ │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────────── 📦 Line Items ─────────────────────────────────────────╮
+│                                                                                                │
+│      #   Description                              Qty    Unit Price         Amount   Arith ✓   │
+│  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  │
+│      1   Laptop - Dell Inspiron 15                5.0           PKR   PKR 6,000.00      ✓      │
+│                                                            1,200.00                            │
+│      2   Wireless Mouse - Logitech M185          10.0    PKR 150.00   PKR 1,500.00      ✓      │
+│      3   USB-C Hub - 7-Port                       8.0    PKR 187.50   PKR 1,500.00      ✓      │
+│      4   HDMI Cable - 2m                         20.0     PKR 50.00   PKR 1,000.00      ✓      │
+│                                                                                                │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────────── 🧮 Arithmetic Check ──────────────────────────────────────╮
+│ ✓ ✓  Line items sum (10000.00) ≈ subtotal (10000.00) | ✓  subtotal + tax = 11700.0 ≈ total     │
+│ (11700.0) | ✓  All 4 line item(s) arithmetic correct                                           │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────── 📊 Confidence Summary ─────────────────────────────────────╮
+│   Overall Confidence   : 95.4%                                                                 │
+│   Completeness Score   : 95.0%                                                                 │
+│   Arithmetic OK        : Yes                                                                   │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────────────── ⚠️  Warnings ─────────────────────────────────────────╮
+│   ⚠  Optional field not found: 'vendor_tax_id'                                                 │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────────── 🚦 Routing Decision ──────────────────────────────────────╮
+│   ✅  AUTO_POST                                                                                │
+│                                                                                                │
+│   Confidence 95.4% ≥ 95% threshold. Safe to auto-post to ERP.                                  │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+──────────────────────────────────────────────────────────────────────────────────────────────────
+
+  ✓  JSON result saved → C:\Users\mhash\Desktop\Web\.Wapexp\2 In-progress 
+projects\invoice-rpa-firebase\invoice-rpa\Backend\outputs\phase1_clean_digital_20260605_181130_res
+ult.json
+
+
+  Process another invoice? [y/n] (n): y
+
+╭────────────────────────────────────── 📂 Upload Invoice ───────────────────────────────────────╮
+│   Supported formats: .bmp, .jpeg, .jpg, .pdf, .png, .tiff, .webp                               │
+│                                                                                                │
+│   Enter the full path to your invoice file.                                                    │
+│   (You can drag & drop the file into the terminal on most systems)                             │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  Invoice file path: C:\Users\mhash\Desktop\Web\.Wapexp\2 In-progress projects\invoice-rpa-firebase\invoice-rpa\Backend\phase2_scanned_good.pdf
+
+  ✓  File accepted: phase2_scanned_good.pdf (0.21 MB)
+
+╭──────────────────────────────────────── ⚙  Processing ─────────────────────────────────────────╮
+│   Running 6-step pipeline on: phase2_scanned_good.pdf                                          │
+│                                                                                                │
+│   Step 1 → Invoice ingested                                                                    │
+│   Step 2 → PDF/image preprocessing…                                                            │
+│   Step 3 → AI extraction (Groq / Ollama)…                                                      │
+│   Step 4 → Validation & confidence scoring…                                                    │
+│   Step 5 → Confidence routing…                                                                 │
+│   Step 6 → Feedback loop ready                                                                 │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+18:21:41  INFO      [Pipeline] Step 2 — Preprocessing 'phase2_scanned_good.pdf'…
+18:21:42  INFO      [Preprocess] PDF rendered via PyMuPDF at 300 DPI
+18:21:42  INFO      [Preprocess] Original size: (2481, 3508)
+18:21:48  INFO      [Preprocess] Final size:    (2400, 3393)
+18:21:48  INFO      [Pipeline] Step 3 — Extracting invoice data via AI…
+18:21:49  INFO      [Extractor] Groq attempt 1/3 — model: meta-llama/llama-4-scout-17b-16e-instruct
+18:21:53  INFO      HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+18:21:53  INFO      [Pipeline] Step 4 — Validating & scoring confidence…
+18:21:53  INFO      [Pipeline] Step 5 — Routing based on confidence…
+18:21:53  INFO      [Router] → MANUAL_REVIEW (validation errors)
+18:21:53  INFO      [Pipeline] ✓ Done — status=PARTIAL, confidence=93.9%, route=MANUAL_REVIEW
+
+─────────────────────────────────── INVOICE EXTRACTION RESULT ────────────────────────────────────
+╭───────────────────────────────────────── 📄 Overview ──────────────────────────────────────────╮
+│   File        : phase2_scanned_good.pdf                                                        │
+│   Processed   : 2026-06-05T18:21:41.287370                                                     │
+│   Model       : meta-llama/llama-4-scout-17b-16e-instruct  (attempts: 1)                       │
+│   Status      : PARTIAL                                                                        │
+│   Route       : 🔴 MANUAL_REVIEW                                                               │
+│   Reason      : Forced MANUAL_REVIEW due to 1 validation error(s): DUPLICATE DETECTED: Invoice │
+│ #INV-2024-00123 was already processed from 'phase1_clean_digital.pdf'                          │
+│                                                                                                │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────────── 🔍 Extracted Fields ──────────────────────────────────────╮
+│ ╭─────────────────────────┬────────────────────────────────────────┬──────────────┬──────────╮ │
+│ │ Field                   │ Extracted Value                        │  Confidence  │  Level   │ │
+│ ├─────────────────────────┼────────────────────────────────────────┼──────────────┼──────────┤ │
+│ │ Vendor Name             │ ABC Electronics Ltd                    │    92.0%     │  MEDIUM  │ │
+│ │ Vendor Address          │ 123 Tech Street, Karachi, Pakistan     │    80.0%     │  MEDIUM  │ │
+│ │ Vendor Tax ID           │ —                                      │    50.0%     │   LOW    │ │
+│ │ Invoice Number          │ INV-2024-00123                         │    93.0%     │  MEDIUM  │ │
+│ │ Invoice Date            │ 2024-01-15                             │    95.0%     │   HIGH   │ │
+│ │ Due Date                │ 2024-02-15                             │    95.0%     │   HIGH   │ │
+│ │ PO Number               │ PO-98765                               │    80.0%     │  MEDIUM  │ │
+│ │ Payment Terms           │ —                                      │    50.0%     │   LOW    │ │
+│ │ Currency                │ PKR                                    │    97.0%     │   HIGH   │ │
+│ │ Subtotal                │ PKR 10,000.00                          │    96.0%     │   HIGH   │ │
+│ │ Tax Rate                │ 17.0%                                  │    80.0%     │  MEDIUM  │ │
+│ │ Tax Amount              │ PKR 1,700.00                           │    96.0%     │   HIGH   │ │
+│ │ Total Amount            │ PKR 11,700.00                          │    96.0%     │   HIGH   │ │
+│ ╰─────────────────────────┴────────────────────────────────────────┴──────────────┴──────────╯ │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────────── 📦 Line Items ─────────────────────────────────────────╮
+│                                                                                                │
+│      #   Description                              Qty    Unit Price         Amount   Arith ✓   │
+│  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  │
+│      1   Laptop - Dell Inspiron 15                5.0           PKR   PKR 6,000.00      ✓      │
+│                                                            1,200.00                            │
+│      2   Wireless Mouse - Logitech M185          10.0    PKR 150.00   PKR 1,500.00      ✓      │
+│      3   USB-C Hub - 7-Port                       8.0    PKR 187.50   PKR 1,500.00      ✓      │
+│      4   HDMI Cable - 2m                         20.0     PKR 50.00   PKR 1,000.00      ✓      │
+│                                                                                                │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────────── 🧮 Arithmetic Check ──────────────────────────────────────╮
+│ ✓ ✓  Line items sum (10000.00) ≈ subtotal (10000.00) | ✓  subtotal + tax = 11700.0 ≈ total     │
+│ (11700.0) | ✓  All 4 line item(s) arithmetic correct                                           │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────── 📊 Confidence Summary ─────────────────────────────────────╮
+│   Overall Confidence   : 93.9%                                                                 │
+│   Completeness Score   : 90.0%                                                                 │
+│   Arithmetic OK        : Yes                                                                   │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────────── ❌ Validation Errors ─────────────────────────────────────╮
+│   ✗ DUPLICATE DETECTED: Invoice #INV-2024-00123 was already processed from                     │
+│ 'phase1_clean_digital.pdf'                                                                     │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────────────── ⚠️  Warnings ─────────────────────────────────────────╮
+│   ⚠  Optional field not found: 'vendor_tax_id'                                                 │
+│   ⚠  Optional field not found: 'payment_terms'                                                 │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────────── 🚦 Routing Decision ──────────────────────────────────────╮
+│   🔴  MANUAL_REVIEW                                                                            │
+│                                                                                                │
+│   Forced MANUAL_REVIEW due to 1 validation error(s): DUPLICATE DETECTED: Invoice               │
+│ #INV-2024-00123 was already processed from 'phase1_clean_digital.pdf'                          │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+──────────────────────────────────────────────────────────────────────────────────────────────────
+
+  ✓  JSON result saved → C:\Users\mhash\Desktop\Web\.Wapexp\2 In-progress 
+projects\invoice-rpa-firebase\invoice-rpa\Backend\outputs\phase2_scanned_good_20260605_182153_resu
+lt.json
+
+
+  Process another invoice? [y/n] (n): y
+
+╭────────────────────────────────────── 📂 Upload Invoice ───────────────────────────────────────╮
+│   Supported formats: .bmp, .jpeg, .jpg, .pdf, .png, .tiff, .webp                               │
+│                                                                                                │
+│   Enter the full path to your invoice file.                                                    │
+│   (You can drag & drop the file into the terminal on most systems)                             │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  Invoice file path: C:\Users\mhash\Desktop\Web\.Wapexp\2 In-progress projects\invoice-rpa-firebase\invoice-rpa\Backend\phase3_scanned_blurry.pdf
+
+  ✓  File accepted: phase3_scanned_blurry.pdf (0.02 MB)
+
+╭──────────────────────────────────────── ⚙  Processing ─────────────────────────────────────────╮
+│   Running 6-step pipeline on: phase3_scanned_blurry.pdf                                        │
+│                                                                                                │
+│   Step 1 → Invoice ingested                                                                    │
+│   Step 2 → PDF/image preprocessing…                                                            │
+│   Step 3 → AI extraction (Groq / Ollama)…                                                      │
+│   Step 4 → Validation & confidence scoring…                                                    │
+│   Step 5 → Confidence routing…                                                                 │
+│   Step 6 → Feedback loop ready                                                                 │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+18:25:49  INFO      [Pipeline] Step 2 — Preprocessing 'phase3_scanned_blurry.pdf'…
+18:25:50  INFO      [Preprocess] PDF rendered via PyMuPDF at 300 DPI
+18:25:50  INFO      [Preprocess] Original size: (2481, 3508)
+18:26:00  INFO      [Preprocess] Final size:    (2400, 3393)
+18:26:00  INFO      [Pipeline] Step 3 — Extracting invoice data via AI…
+18:26:00  INFO      [Extractor] Groq attempt 1/3 — model: meta-llama/llama-4-scout-17b-16e-instruct
+18:26:03  INFO      HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+18:26:03  INFO      [Pipeline] Step 4 — Validating & scoring confidence…
+18:26:03  INFO      [Pipeline] Step 5 — Routing based on confidence…
+18:26:03  INFO      [Router] → MANUAL_REVIEW (validation errors)
+18:26:03  INFO      [Pipeline] ✓ Done — status=PARTIAL, confidence=30.7%, route=MANUAL_REVIEW
+
+─────────────────────────────────── INVOICE EXTRACTION RESULT ────────────────────────────────────
+╭───────────────────────────────────────── 📄 Overview ──────────────────────────────────────────╮
+│   File        : phase3_scanned_blurry.pdf                                                      │
+│   Processed   : 2026-06-05T18:25:49.668799                                                     │
+│   Model       : meta-llama/llama-4-scout-17b-16e-instruct  (attempts: 1)                       │
+│   Status      : PARTIAL                                                                        │
+│   Route       : 🔴 MANUAL_REVIEW                                                               │
+│   Reason      : Forced MANUAL_REVIEW due to 5 validation error(s): Required field missing:     │
+│ 'invoice_number'                                                                               │
+│                                                                                                │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────────── 🔍 Extracted Fields ──────────────────────────────────────╮
+│ ╭─────────────────────────┬────────────────────────────────────────┬──────────────┬──────────╮ │
+│ │ Field                   │ Extracted Value                        │  Confidence  │  Level   │ │
+│ ├─────────────────────────┼────────────────────────────────────────┼──────────────┼──────────┤ │
+│ │ Vendor Name             │ ACC Electronics Ltd                    │    92.0%     │  MEDIUM  │ │
+│ │ Vendor Address          │ —                                      │    50.0%     │   LOW    │ │
+│ │ Vendor Tax ID           │ —                                      │    50.0%     │   LOW    │ │
+│ │ Invoice Number          │ —                                      │     0.0%     │   LOW    │ │
+│ │ Invoice Date            │ —                                      │     0.0%     │   LOW    │ │
+│ │ Due Date                │ —                                      │    50.0%     │   LOW    │ │
+│ │ PO Number               │ —                                      │    50.0%     │   LOW    │ │
+│ │ Payment Terms           │ —                                      │    50.0%     │   LOW    │ │
+│ │ Currency                │ —                                      │     0.0%     │   LOW    │ │
+│ │ Subtotal                │ —                                      │    50.0%     │   LOW    │ │
+│ │ Tax Rate                │ —                                      │    50.0%     │   LOW    │ │
+│ │ Tax Amount              │ —                                      │    50.0%     │   LOW    │ │
+│ │ Total Amount            │ —                                      │     0.0%     │   LOW    │ │
+│ ╰─────────────────────────┴────────────────────────────────────────┴──────────────┴──────────╯ │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────────── 🧮 Arithmetic Check ──────────────────────────────────────╮
+│ ✓ Insufficient data for arithmetic check                                                       │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────── 📊 Confidence Summary ─────────────────────────────────────╮
+│   Overall Confidence   : 30.7%                                                                 │
+│   Completeness Score   : 10.0%                                                                 │
+│   Arithmetic OK        : Yes                                                                   │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────────── ❌ Validation Errors ─────────────────────────────────────╮
+│   ✗ Required field missing: 'invoice_number'                                                   │
+│   ✗ Required field missing: 'invoice_date'                                                     │
+│   ✗ Required field missing: 'total_amount'                                                     │
+│   ✗ Required field missing: 'currency'                                                         │
+│   ✗ Required field missing: 'line_items'                                                       │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────────────── ⚠️  Warnings ─────────────────────────────────────────╮
+│   ⚠  Optional field not found: 'vendor_address'                                                │
+│   ⚠  Optional field not found: 'vendor_tax_id'                                                 │
+│   ⚠  Optional field not found: 'due_date'                                                      │
+│   ⚠  Optional field not found: 'subtotal'                                                      │
+│   ⚠  Optional field not found: 'tax_amount'                                                    │
+│   ⚠  Optional field not found: 'tax_rate'                                                      │
+│   ⚠  Optional field not found: 'po_number'                                                     │
+│   ⚠  Optional field not found: 'payment_terms'                                                 │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────────── 🚦 Routing Decision ──────────────────────────────────────╮
+│   🔴  MANUAL_REVIEW                                                                            │
+│                                                                                                │
+│   Forced MANUAL_REVIEW due to 5 validation error(s): Required field missing: 'invoice_number'  │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+──────────────────────────────────────────────────────────────────────────────────────────────────
+
+  ✓  JSON result saved → C:\Users\mhash\Desktop\Web\.Wapexp\2 In-progress 
+projects\invoice-rpa-firebase\invoice-rpa\Backend\outputs\phase3_scanned_blurry_20260605_182603_re
+sult.json
+
+
+  Process another invoice? [y/n] (n): y
+
+╭────────────────────────────────────── 📂 Upload Invoice ───────────────────────────────────────╮
+│   Supported formats: .bmp, .jpeg, .jpg, .pdf, .png, .tiff, .webp                               │
+│                                                                                                │
+│   Enter the full path to your invoice file.                                                    │
+│   (You can drag & drop the file into the terminal on most systems)                             │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  Invoice file path: C:\Users\mhash\Desktop\Web\.Wapexp\2 In-progress projects\invoice-rpa-firebase\invoice-rpa\Backend\phase4_multipage.pdf
+
+  ✓  File accepted: phase4_multipage.pdf (0.00 MB)
+
+╭──────────────────────────────────────── ⚙  Processing ─────────────────────────────────────────╮
+│   Running 6-step pipeline on: phase4_multipage.pdf                                             │
+│                                                                                                │
+│   Step 1 → Invoice ingested                                                                    │
+│   Step 2 → PDF/image preprocessing…                                                            │
+│   Step 3 → AI extraction (Groq / Ollama)…                                                      │
+│   Step 4 → Validation & confidence scoring…                                                    │
+│   Step 5 → Confidence routing…                                                                 │
+│   Step 6 → Feedback loop ready                                                                 │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+18:26:18  INFO      [Pipeline] Step 2 — Preprocessing 'phase4_multipage.pdf'…
+18:26:19  INFO      [Preprocess] PDF rendered via PyMuPDF at 300 DPI
+18:26:19  INFO      [Preprocess] Original size: (2481, 3508)
+18:26:29  INFO      [Preprocess] Final size:    (2400, 3393)
+18:26:29  INFO      [Pipeline] Step 3 — Extracting invoice data via AI…
+18:26:29  INFO      [Extractor] Groq attempt 1/3 — model: meta-llama/llama-4-scout-17b-16e-instruct
+18:26:32  INFO      HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+18:26:32  INFO      [Pipeline] Step 4 — Validating & scoring confidence…
+18:26:32  INFO      [Pipeline] Step 5 — Routing based on confidence…
+18:26:32  INFO      [Router] → SOFT_REVIEW (93.9%)
+18:26:32  INFO      [Pipeline] ✓ Done — status=SUCCESS, confidence=93.9%, route=SOFT_REVIEW
+
+─────────────────────────────────── INVOICE EXTRACTION RESULT ────────────────────────────────────
+╭───────────────────────────────────────── 📄 Overview ──────────────────────────────────────────╮
+│   File        : phase4_multipage.pdf                                                           │
+│   Processed   : 2026-06-05T18:26:18.725968                                                     │
+│   Model       : meta-llama/llama-4-scout-17b-16e-instruct  (attempts: 1)                       │
+│   Status      : SUCCESS                                                                        │
+│   Route       : ⚠️  SOFT_REVIEW                                                                │
+│   Reason      : Confidence 93.9% is between 80%–95%. Quick human review recommended.           │
+│                                                                                                │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────────── 🔍 Extracted Fields ──────────────────────────────────────╮
+│ ╭─────────────────────────┬────────────────────────────────────────┬──────────────┬──────────╮ │
+│ │ Field                   │ Extracted Value                        │  Confidence  │  Level   │ │
+│ ├─────────────────────────┼────────────────────────────────────────┼──────────────┼──────────┤ │
+│ │ Vendor Name             │ ABC Electronics Ltd                    │    92.0%     │  MEDIUM  │ │
+│ │ Vendor Address          │ 123 Tech Street, Karachi               │    80.0%     │  MEDIUM  │ │
+│ │ Vendor Tax ID           │ —                                      │    50.0%     │   LOW    │ │
+│ │ Invoice Number          │ INV-2024-00789                         │    93.0%     │  MEDIUM  │ │
+│ │ Invoice Date            │ 2024-03-20                             │    95.0%     │   HIGH   │ │
+│ │ Due Date                │ 2024-04-20                             │    95.0%     │   HIGH   │ │
+│ │ PO Number               │ PO-44556                               │    80.0%     │  MEDIUM  │ │
+│ │ Payment Terms           │ —                                      │    50.0%     │   LOW    │ │
+│ │ Currency                │ PKR                                    │    97.0%     │   HIGH   │ │
+│ │ Subtotal                │ PKR 39,940.00                          │    96.0%     │   HIGH   │ │
+│ │ Tax Rate                │ 17.0%                                  │    80.0%     │  MEDIUM  │ │
+│ │ Tax Amount              │ PKR 6,790.00                           │    96.0%     │   HIGH   │ │
+│ │ Total Amount            │ PKR 46,730.00                          │    96.0%     │   HIGH   │ │
+│ ╰─────────────────────────┴────────────────────────────────────────┴──────────────┴──────────╯ │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────────── 📦 Line Items ─────────────────────────────────────────╮
+│                                                                                                │
+│      #   Description                              Qty    Unit Price         Amount   Arith ✓   │
+│  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  │
+│      1   Laptop - Dell Inspiron 15 (i7)          10.0           PKR            PKR      ✓      │
+│                                                            1,800.00      18,000.00             │
+│      2   Laptop - HP Pavilion 14 (i5)             5.0           PKR   PKR 7,000.00      ✓      │
+│                                                            1,400.00                            │
+│      3   Mechanical Keyboard - Keychron          15.0    PKR 220.00   PKR 3,300.00      ✓      │
+│      4   Gaming Mouse - Razer DeathAdder         15.0    PKR 180.00   PKR 2,700.00      ✓      │
+│      5   USB-C Hub - 7-Port                      20.0    PKR 187.00   PKR 3,740.00      ✓      │
+│      6   Monitor - LG 27" FHD                     8.0    PKR 650.00   PKR 5,200.00      ✓      │
+│                                                                                                │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────────── 🧮 Arithmetic Check ──────────────────────────────────────╮
+│ ✓ ✓  Line items sum (39940.00) ≈ subtotal (39940.00) | ✓  subtotal + tax = 46730.0 ≈ total     │
+│ (46730.0) | ✓  All 6 line item(s) arithmetic correct                                           │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────── 📊 Confidence Summary ─────────────────────────────────────╮
+│   Overall Confidence   : 93.9%                                                                 │
+│   Completeness Score   : 90.0%                                                                 │
+│   Arithmetic OK        : Yes                                                                   │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────────────── ⚠️  Warnings ─────────────────────────────────────────╮
+│   ⚠  Optional field not found: 'vendor_tax_id'                                                 │
+│   ⚠  Optional field not found: 'payment_terms'                                                 │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────────── 🚦 Routing Decision ──────────────────────────────────────╮
+│   ⚠️   SOFT_REVIEW                                                                             │
+│                                                                                                │
+│   Confidence 93.9% is between 80%–95%. Quick human review recommended.                         │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+──────────────────────────────────────────────────────────────────────────────────────────────────
+
+  ✓  JSON result saved → C:\Users\mhash\Desktop\Web\.Wapexp\2 In-progress 
+projects\invoice-rpa-firebase\invoice-rpa\Backend\outputs\phase4_multipage_20260605_182632_result.
+json
+
+
+  Process another invoice? [y/n] (n): y
+
+╭────────────────────────────────────── 📂 Upload Invoice ───────────────────────────────────────╮
+│   Supported formats: .bmp, .jpeg, .jpg, .pdf, .png, .tiff, .webp                               │
+│                                                                                                │
+│   Enter the full path to your invoice file.                                                    │
+│   (You can drag & drop the file into the terminal on most systems)                             │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  Invoice file path: C:\Users\mhash\Desktop\Web\.Wapexp\2 In-progress projects\invoice-rpa-firebase\invoice-rpa\Backend\phase5_foreign_language.pdf
+
+  ✓  File accepted: phase5_foreign_language.pdf (0.17 MB)
+
+╭──────────────────────────────────────── ⚙  Processing ─────────────────────────────────────────╮
+│   Running 6-step pipeline on: phase5_foreign_language.pdf                                      │
+│                                                                                                │
+│   Step 1 → Invoice ingested                                                                    │
+│   Step 2 → PDF/image preprocessing…                                                            │
+│   Step 3 → AI extraction (Groq / Ollama)…                                                      │
+│   Step 4 → Validation & confidence scoring…                                                    │
+│   Step 5 → Confidence routing…                                                                 │
+│   Step 6 → Feedback loop ready                                                                 │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+18:26:47  INFO      [Pipeline] Step 2 — Preprocessing 'phase5_foreign_language.pdf'…
+18:26:48  INFO      [Preprocess] PDF rendered via PyMuPDF at 300 DPI
+18:26:48  INFO      [Preprocess] Original size: (2481, 3508)
+18:26:59  INFO      [Preprocess] Final size:    (2400, 3393)
+18:26:59  INFO      [Pipeline] Step 3 — Extracting invoice data via AI…
+18:26:59  INFO      [Extractor] Groq attempt 1/3 — model: meta-llama/llama-4-scout-17b-16e-instruct
+18:27:02  INFO      HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+18:27:02  INFO      [Pipeline] Step 4 — Validating & scoring confidence…
+18:27:02  INFO      [Pipeline] Step 5 — Routing based on confidence…
+18:27:02  INFO      [Router] → AUTO_POST (96.9%)
+18:27:02  INFO      [Pipeline] ✓ Done — status=SUCCESS, confidence=96.9%, route=AUTO_POST
+
+─────────────────────────────────── INVOICE EXTRACTION RESULT ────────────────────────────────────
+╭───────────────────────────────────────── 📄 Overview ──────────────────────────────────────────╮
+│   File        : phase5_foreign_language.pdf                                                    │
+│   Processed   : 2026-06-05T18:26:47.721528                                                     │
+│   Model       : meta-llama/llama-4-scout-17b-16e-instruct  (attempts: 1)                       │
+│   Status      : SUCCESS                                                                        │
+│   Route       : ✅ AUTO_POST                                                                   │
+│   Reason      : Confidence 96.9% ≥ 95% threshold. Safe to auto-post to ERP.                    │
+│                                                                                                │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────────── 🔍 Extracted Fields ──────────────────────────────────────╮
+│ ╭─────────────────────────┬────────────────────────────────────────┬──────────────┬──────────╮ │
+│ │ Field                   │ Extracted Value                        │  Confidence  │  Level   │ │
+│ ├─────────────────────────┼────────────────────────────────────────┼──────────────┼──────────┤ │
+│ │ Vendor Name             │ Al-Rashid Trading LLC                  │    92.0%     │  MEDIUM  │ │
+│ │ Vendor Address          │ 123 Tech Street, Karachi               │    80.0%     │  MEDIUM  │ │
+│ │ Vendor Tax ID           │ 3001234568700003                       │    80.0%     │  MEDIUM  │ │
+│ │ Invoice Number          │ INV-2024-AR-0045                       │    93.0%     │  MEDIUM  │ │
+│ │ Invoice Date            │ 2024-03-25                             │    95.0%     │   HIGH   │ │
+│ │ Due Date                │ 2024-04-25                             │    95.0%     │   HIGH   │ │
+│ │ PO Number               │ PO-AR-7890                             │    80.0%     │  MEDIUM  │ │
+│ │ Payment Terms           │ Payment due within 30 days             │    80.0%     │  MEDIUM  │ │
+│ │ Currency                │ PKR                                    │    97.0%     │   HIGH   │ │
+│ │ Subtotal                │ PKR 14,060.00                          │    96.0%     │   HIGH   │ │
+│ │ Tax Rate                │ 17.0%                                  │    80.0%     │  MEDIUM  │ │
+│ │ Tax Amount              │ PKR 2,390.00                           │    96.0%     │   HIGH   │ │
+│ │ Total Amount            │ PKR 16,450.00                          │    96.0%     │   HIGH   │ │
+│ ╰─────────────────────────┴────────────────────────────────────────┴──────────────┴──────────╯ │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────────── 📦 Line Items ─────────────────────────────────────────╮
+│                                                                                                │
+│      #   Description                              Qty    Unit Price         Amount   Arith ✓   │
+│  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  │
+│      1   Dell Inspiron                            5.0           PKR   PKR 6,000.00      ✓      │
+│                                                            1,200.00                            │
+│      2   HP LaserJet                              3.0    PKR 800.00   PKR 2,400.00      ✓      │
+│      3   Logitech                                10.0    PKR 150.00   PKR 1,500.00      ✓      │
+│      4   LG 24                                    4.0    PKR 600.00   PKR 2,400.00      ✓      │
+│      5   Keychron K2                              8.0    PKR 220.00   PKR 1,760.00      ✓      │
+│                                                                                                │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────────── 🧮 Arithmetic Check ──────────────────────────────────────╮
+│ ✓ ✓  Line items sum (14060.00) ≈ subtotal (14060.00) | ✓  subtotal + tax = 16450.0 ≈ total     │
+│ (16450.0) | ✓  All 5 line item(s) arithmetic correct                                           │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────── 📊 Confidence Summary ─────────────────────────────────────╮
+│   Overall Confidence   : 96.9%                                                                 │
+│   Completeness Score   : 100.0%                                                                │
+│   Arithmetic OK        : Yes                                                                   │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────────── 🚦 Routing Decision ──────────────────────────────────────╮
+│   ✅  AUTO_POST                                                                                │
+│                                                                                                │
+│   Confidence 96.9% ≥ 95% threshold. Safe to auto-post to ERP.                                  │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+──────────────────────────────────────────────────────────────────────────────────────────────────
+
+  ✓  JSON result saved → C:\Users\mhash\Desktop\Web\.Wapexp\2 In-progress 
+projects\invoice-rpa-firebase\invoice-rpa\Backend\outputs\phase5_foreign_language_20260605_182702_
+result.json
+
+
+  Process another invoice? [y/n] (n): y
+
+╭────────────────────────────────────── 📂 Upload Invoice ───────────────────────────────────────╮
+│   Supported formats: .bmp, .jpeg, .jpg, .pdf, .png, .tiff, .webp                               │
+│                                                                                                │
+│   Enter the full path to your invoice file.                                                    │
+│   (You can drag & drop the file into the terminal on most systems)                             │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  Invoice file path: C:\Users\mhash\Desktop\Web\.Wapexp\2 In-progress projects\invoice-rpa-firebase\invoice-rpa\Backend\phase6_handwritten.pdf
+
+  ✓  File accepted: phase6_handwritten.pdf (0.24 MB)
+
+╭──────────────────────────────────────── ⚙  Processing ─────────────────────────────────────────╮
+│   Running 6-step pipeline on: phase6_handwritten.pdf                                           │
+│                                                                                                │
+│   Step 1 → Invoice ingested                                                                    │
+│   Step 2 → PDF/image preprocessing…                                                            │
+│   Step 3 → AI extraction (Groq / Ollama)…                                                      │
+│   Step 4 → Validation & confidence scoring…                                                    │
+│   Step 5 → Confidence routing…                                                                 │
+│   Step 6 → Feedback loop ready                                                                 │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+18:30:39  INFO      [Pipeline] Step 2 — Preprocessing 'phase6_handwritten.pdf'…
+18:30:40  INFO      [Preprocess] PDF rendered via PyMuPDF at 300 DPI
+18:30:40  INFO      [Preprocess] Original size: (2481, 3508)
+18:30:50  INFO      [Preprocess] Final size:    (2400, 3393)
+18:30:50  INFO      [Pipeline] Step 3 — Extracting invoice data via AI…
+18:30:51  INFO      [Extractor] Groq attempt 1/3 — model: meta-llama/llama-4-scout-17b-16e-instruct
+18:30:53  INFO      HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+18:30:53  INFO      [Pipeline] Step 4 — Validating & scoring confidence…
+18:30:53  INFO      [Pipeline] Step 5 — Routing based on confidence…
+18:30:53  INFO      [Router] → MANUAL_REVIEW (validation errors)
+18:30:53  INFO      [Pipeline] ✓ Done — status=PARTIAL, confidence=67.9%, route=MANUAL_REVIEW
+
+─────────────────────────────────── INVOICE EXTRACTION RESULT ────────────────────────────────────
+╭───────────────────────────────────────── 📄 Overview ──────────────────────────────────────────╮
+│   File        : phase6_handwritten.pdf                                                         │
+│   Processed   : 2026-06-05T18:30:39.046823                                                     │
+│   Model       : meta-llama/llama-4-scout-17b-16e-instruct  (attempts: 1)                       │
+│   Status      : PARTIAL                                                                        │
+│   Route       : 🔴 MANUAL_REVIEW                                                               │
+│   Reason      : Forced MANUAL_REVIEW due to 2 validation error(s): Required field missing:     │
+│ 'total_amount'                                                                                 │
+│                                                                                                │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────────── 🔍 Extracted Fields ──────────────────────────────────────╮
+│ ╭─────────────────────────┬────────────────────────────────────────┬──────────────┬──────────╮ │
+│ │ Field                   │ Extracted Value                        │  Confidence  │  Level   │ │
+│ ├─────────────────────────┼────────────────────────────────────────┼──────────────┼──────────┤ │
+│ │ Vendor Name             │ ABC Electronics Ltd                    │    92.0%     │  MEDIUM  │ │
+│ │ Vendor Address          │ 123 Tech Street, Karachi               │    80.0%     │  MEDIUM  │ │
+│ │ Vendor Tax ID           │ —                                      │    50.0%     │   LOW    │ │
+│ │ Invoice Number          │ INV-2024-HW-099                        │    93.0%     │  MEDIUM  │ │
+│ │ Invoice Date            │ 2024-04-01                             │    95.0%     │   HIGH   │ │
+│ │ Due Date                │ —                                      │    50.0%     │   LOW    │ │
+│ │ PO Number               │ PO-HW-5568                             │    80.0%     │  MEDIUM  │ │
+│ │ Payment Terms           │ —                                      │    50.0%     │   LOW    │ │
+│ │ Currency                │ PKR                                    │    97.0%     │   HIGH   │ │
+│ │ Subtotal                │ —                                      │    50.0%     │   LOW    │ │
+│ │ Tax Rate                │ 17.0%                                  │    80.0%     │  MEDIUM  │ │
+│ │ Tax Amount              │ —                                      │    50.0%     │   LOW    │ │
+│ │ Total Amount            │ —                                      │     0.0%     │   LOW    │ │
+│ ╰─────────────────────────┴────────────────────────────────────────┴──────────────┴──────────╯ │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────────── 🧮 Arithmetic Check ──────────────────────────────────────╮
+│ ✓ Insufficient data for arithmetic check                                                       │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────── 📊 Confidence Summary ─────────────────────────────────────╮
+│   Overall Confidence   : 67.9%                                                                 │
+│   Completeness Score   : 55.0%                                                                 │
+│   Arithmetic OK        : Yes                                                                   │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────────── ❌ Validation Errors ─────────────────────────────────────╮
+│   ✗ Required field missing: 'total_amount'                                                     │
+│   ✗ Required field missing: 'line_items'                                                       │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────────────── ⚠️  Warnings ─────────────────────────────────────────╮
+│   ⚠  Optional field not found: 'vendor_tax_id'                                                 │
+│   ⚠  Optional field not found: 'due_date'                                                      │
+│   ⚠  Optional field not found: 'subtotal'                                                      │
+│   ⚠  Optional field not found: 'tax_amount'                                                    │
+│   ⚠  Optional field not found: 'payment_terms'                                                 │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────────── 🚦 Routing Decision ──────────────────────────────────────╮
+│   🔴  MANUAL_REVIEW                                                                            │
+│                                                                                                │
+│   Forced MANUAL_REVIEW due to 2 validation error(s): Required field missing: 'total_amount'    │
+╰────────────────────────────────────────────────────────────────────────────────────────────────╯
+──────────────────────────────────────────────────────────────────────────────────────────────────
+
+  ✓  JSON result saved → C:\Users\mhash\Desktop\Web\.Wapexp\2 In-progress 
+projects\invoice-rpa-firebase\invoice-rpa\Backend\outputs\phase6_handwritten_20260605_183053_resul
+t.json
+
+
+  Process another invoice? [y/n] (n): n
+
+  Exiting. Goodbye!
+
+(.venv) PS C:\Users\mhash\Desktop\Web\.Wapexp\2 In-progress projects\invoice-rpa-firebase\invoice-rpa\Backend> 

@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intelligent RPA - Accounts Payable</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: #1e2d42;
+    --accent: #00d4ff;
+    --accent2: #7c3aed;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'Space Grotesk', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* Layout */
+  .layout { display: flex; height: 100vh; }
+  .sidebar { width: 240px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; }
+  .main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+
+  /* Sidebar */
+  .logo { padding: 20px 24px; border-bottom: 1px solid var(--border); }
+  .logo h1 { font-size: 14px; font-weight: 700; letter-spacing: 0.05em; color: var(--accent); text-transform: uppercase; }
+  .logo p { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  .nav { padding: 12px 0; flex: 1; }
+  .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 24px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--muted); transition: all 0.15s; border-left: 3px solid transparent; }
+  .nav-item:hover { color: var(--text); background: var(--surface2); }
+  .nav-item.active { color: var(--accent); background: rgba(0, 212, 255, 0.08); border-left-color: var(--accent); }
+  .nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
+
+  .nav-badge { margin-left: auto; background: var(--accent2); color: white; font-size: 10px; font-family: var(--mono); padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; }
+
+  /* Header */
+  .topbar { padding: 16px 28px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--surface); }
+  .topbar h2 { font-size: 18px; font-weight: 600; }
+  .topbar-actions { display: flex; gap: 10px; align-items: center; }
+
+  /* Content */
+  .content { padding: 24px 28px; flex: 1; }
+
+  /* Cards */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; position: relative; overflow: hidden; }
+  .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+  .stat-card.blue::before { background: var(--accent); }
+  .stat-card.purple::before { background: var(--accent2); }
+  .stat-card.green::before { background: var(--success); }
+  .stat-card.yellow::before { background: var(--warning); }
+  .stat-card.red::before { background: var(--danger); }
+
+  .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); font-weight: 600; }
+  .stat-value { font-size: 32px; font-weight: 700; margin: 8px 0 4px; font-family: var(--mono); }
+  .stat-sub { font-size: 12px; color: var(--muted); }
+
+  /* Tables */
+  .table-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .table-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .table-header h3 { font-size: 14px; font-weight: 600; }
+
+  table { width: 100%; border-collapse: collapse; }
+  th { padding: 10px 16px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); text-align: left; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.2); }
+  td { padding: 12px 16px; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  td.mono { font-family: var(--mono); font-size: 12px; }
+
+  /* Badges */
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .badge-pending { background: rgba(100,116,139,0.2); color: var(--muted); }
+  .badge-processing { background: rgba(0,212,255,0.15); color: var(--accent); }
+  .badge-review { background: rgba(245,158,11,0.15); color: var(--warning); }
+  .badge-approved { background: rgba(16,185,129,0.15); color: var(--success); }
+  .badge-posted { background: rgba(124,58,237,0.15); color: #a78bfa; }
+  .badge-rejected { background: rgba(239,68,68,0.15); color: var(--danger); }
+  .badge-error { background: rgba(239,68,68,0.2); color: var(--danger); }
+
+  /* Confidence bar */
+  .conf-bar { display: flex; align-items: center; gap: 8px; }
+  .conf-track { flex: 1; height: 4px; background: var(--border); border-radius: 2px; max-width: 80px; }
+  .conf-fill { height: 100%; border-radius: 2px; transition: width 0.3s; }
+  .conf-high { background: var(--success); }
+  .conf-mid { background: var(--warning); }
+  .conf-low { background: var(--danger); }
+  .conf-text { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+
+  /* Buttons */
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; font-family: var(--sans); }
+  .btn-primary { background: var(--accent); color: #000; }
+  .btn-primary:hover { background: #00bbdd; }
+  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-success { background: var(--success); color: white; }
+  .btn-success:hover { background: #059669; }
+  .btn-danger { background: rgba(239,68,68,0.15); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); }
+  .btn-danger:hover { background: var(--danger); color: white; }
+  .btn-sm { padding: 5px 10px; font-size: 12px; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* Upload area */
+  .upload-zone { border: 2px dashed var(--border); border-radius: 12px; padding: 48px 24px; text-align: center; cursor: pointer; transition: all 0.2s; }
+  .upload-zone:hover, .upload-zone.dragover { border-color: var(--accent); background: rgba(0,212,255,0.05); }
+  .upload-icon { font-size: 40px; margin-bottom: 12px; }
+  .upload-text { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+  .upload-sub { font-size: 13px; color: var(--muted); }
+
+  /* Modal / Panel */
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 50; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; width: 90%; max-width: 900px; max-height: 90vh; overflow-y: auto; }
+  .panel-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: var(--surface); z-index: 1; }
+  .panel-body { padding: 24px; }
+  .close-btn { background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; padding: 4px; border-radius: 4px; }
+  .close-btn:hover { color: var(--text); }
+
+  /* Form fields */
+  .field-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .field-group { display: flex; flex-direction: column; gap: 6px; }
+  .field-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+  .field-input { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 6px; font-size: 13px; font-family: var(--sans); transition: border-color 0.15s; }
+  .field-input:focus { outline: none; border-color: var(--accent); }
+  .field-hint { font-size: 11px; color: var(--muted); font-family: var(--mono); }
+
+  /* Confidence indicator in fields */
+  .field-confidence { display: flex; align-items: center; gap: 6px; margin-top: 3px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .dot-high { background: var(--success); }
+  .dot-mid { background: var(--warning); }
+  .dot-low { background: var(--danger); }
+
+  /* Line items table in panel */
+  .line-items-table { font-size: 12px; }
+  .line-items-table th { font-size: 10px; }
+  .line-items-table td input { background: transparent; border: none; color: var(--text); font-size: 12px; font-family: var(--mono); width: 100%; }
+  .line-items-table td input:focus { outline: 1px solid var(--accent); border-radius: 3px; }
+
+  /* Toast */
+  .toast { position: fixed; bottom: 24px; right: 24px; padding: 12px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; z-index: 100; animation: slideUp 0.3s ease; }
+  .toast-success { background: var(--success); color: white; }
+  .toast-error { background: var(--danger); color: white; }
+  @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+  /* Misc */
+  .empty-state { text-align: center; padding: 48px 24px; color: var(--muted); }
+  .empty-state .icon { font-size: 36px; margin-bottom: 12px; }
+  .empty-state p { font-size: 14px; }
+  .section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin: 24px 0 12px; }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+  .actions-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .validation-errors { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); border-radius: 8px; padding: 12px 16px; margin: 12px 0; font-size: 12px; }
+  .validation-errors li { color: var(--danger); margin: 2px 0 2px 16px; }
+
+  .pulse { animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+</style>
+</head>
+<body>
+<div class="layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="logo">
+      <h1>⚡ InvoiceRPA</h1>
+      <p>Accounts Payable AI</p>
+    </div>
+    <nav class="nav">
+      <div class="nav-item active" onclick="showPage('dashboard')" id="nav-dashboard">
+        <span class="icon">📊</span> Dashboard
+      </div>
+      <div class="nav-item" onclick="showPage('upload')" id="nav-upload">
+        <span class="icon">📤</span> Upload Invoice
+      </div>
+      <div class="nav-item" onclick="showPage('invoices')" id="nav-invoices">
+        <span class="icon">🗂️</span> All Invoices
+      </div>
+      <div class="nav-item" onclick="showPage('review')" id="nav-review">
+        <span class="icon">🔍</span> Review Queue
+        <span class="nav-badge" id="review-count">0</span>
+      </div>
+      <div class="nav-item" onclick="showPage('posted')" id="nav-posted">
+        <span class="icon">✅</span> Posted to ERP
+      </div>
+    </nav>
+    <div style="padding: 16px 24px; border-top: 1px solid var(--border);">
+      <div style="font-size: 11px; color: var(--muted); margin-bottom: 6px; font-family: var(--mono);">API STATUS</div>
+      <div id="api-status" style="font-size: 12px; color: var(--muted);">⏳ Connecting...</div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <!-- Dashboard -->
+    <div id="page-dashboard" class="page">
+      <div class="topbar">
+        <h2>Dashboard</h2>
+        <div class="topbar-actions">
+          <button class="btn btn-secondary btn-sm" onclick="loadStats()">🔄 Refresh</button>
+          <button class="btn btn-primary btn-sm" onclick="showPage('upload')">+ Upload Invoice</button>
+        </div>
+      </div>
+      <div class="content">
+        <div class="stats-grid" id="stats-grid">
+          <div class="stat-card blue"><div class="stat-label">Total Invoices</div><div class="stat-value" id="stat-total">—</div><div class="stat-sub">All time</div></div>
+          <div class="stat-card yellow"><div class="stat-label">Pending Review</div><div class="stat-value" id="stat-review">—</div><div class="stat-sub">Needs attention</div></div>
+          <div class="stat-card green"><div class="stat-label">Approved</div><div class="stat-value" id="stat-approved">—</div><div class="stat-sub">Ready for ERP</div></div>
+          <div class="stat-card purple"><div class="stat-label">Posted to ERP</div><div class="stat-value" id="stat-posted">—</div><div class="stat-sub">Completed</div></div>
+          <div class="stat-card blue"><div class="stat-label">Automation Rate</div><div class="stat-value" id="stat-automation">—</div><div class="stat-sub">Auto-posted</div></div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-header">
+            <h3>Recent Invoices</h3>
+            <button class="btn btn-secondary btn-sm" onclick="showPage('invoices')">View All →</button>
+          </div>
+          <div id="recent-invoices-table"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upload -->
+    <div id="page-upload" class="page" style="display:none">
+      <div class="topbar"><h2>Upload Invoice</h2></div>
+      <div class="content" style="max-width: 600px;">
+        <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+          <div class="upload-icon">📄</div>
+          <div class="upload-text">Drop PDF invoice here</div>
+          <div class="upload-sub">or click to browse files</div>
+          <input type="file" id="file-input" accept=".pdf" style="display:none" onchange="handleFileSelect(event)">
+        </div>
+
+        <div id="upload-status" style="margin-top: 20px; display:none;">
+          <div class="table-card" style="padding: 20px;">
+            <div id="upload-status-content"></div>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <div class="section-title">📋 Supported Sources</div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; font-size: 13px;">
+              ✅ PDF upload (manual)
+            </div>
+            <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; font-size: 13px; color: var(--muted);">
+              🔧 Email (IMAP) — coming soon
+            </div>
+            <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; font-size: 13px; color: var(--muted);">
+              🔧 SFTP — coming soon
+            </div>
+            <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; font-size: 13px; color: var(--muted);">
+              🔧 API upload — coming soon
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px; padding: 16px; background: rgba(0,212,255,0.05); border: 1px solid rgba(0,212,255,0.2); border-radius: 8px; font-size: 12px; color: var(--muted);">
+          💡 <strong style="color: var(--accent);">Note:</strong> Azure Document Intelligence key not set → using mock AI extraction for demo. Set <code>AZURE_DOCUMENT_INTELLIGENCE_KEY</code> in <code>.env</code> for real OCR.
+        </div>
+      </div>
+    </div>
+
+    <!-- All Invoices -->
+    <div id="page-invoices" class="page" style="display:none">
+      <div class="topbar">
+        <h2>All Invoices</h2>
+        <div class="topbar-actions">
+          <select id="status-filter" onchange="loadInvoices()" style="background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 6px 12px; border-radius: 6px; font-size: 13px;">
+            <option value="">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="processing">Processing</option>
+            <option value="review">Review</option>
+            <option value="approved">Approved</option>
+            <option value="posted">Posted</option>
+            <option value="rejected">Rejected</option>
+          </select>
+          <button class="btn btn-secondary btn-sm" onclick="loadInvoices()">🔄 Refresh</button>
+        </div>
+      </div>
+      <div class="content">
+        <div class="table-card">
+          <div id="invoices-table"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Review Queue -->
+    <div id="page-review" class="page" style="display:none">
+      <div class="topbar">
+        <h2>Review Queue (HITL)</h2>
+        <div class="topbar-actions">
+          <button class="btn btn-secondary btn-sm" onclick="loadReview()">🔄 Refresh</button>
+        </div>
+      </div>
+      <div class="content">
+        <div style="margin-bottom: 16px; padding: 12px 16px; background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); border-radius: 8px; font-size: 13px; color: var(--warning);">
+          ⚠️ These invoices have confidence score &lt;95% or validation issues. Please review and correct before ERP posting.
+        </div>
+        <div class="table-card">
+          <div id="review-table"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Posted -->
+    <div id="page-posted" class="page" style="display:none">
+      <div class="topbar"><h2>Posted to ERP</h2></div>
+      <div class="content">
+        <div class="table-card">
+          <div id="posted-table"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Review/Edit Modal -->
+<div id="review-modal" class="overlay" style="display:none" onclick="closeModal(event)">
+  <div class="panel" onclick="event.stopPropagation()">
+    <div class="panel-header">
+      <div>
+        <h3 id="modal-title">Invoice Review</h3>
+        <div id="modal-subtitle" style="font-size: 12px; color: var(--muted); margin-top: 2px;"></div>
+      </div>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <span id="modal-confidence-badge"></span>
+        <button class="close-btn" onclick="document.getElementById('review-modal').style.display='none'">✕</button>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div id="modal-validation-errors"></div>
+
+      <div class="section-title">📋 Invoice Fields</div>
+      <div class="field-grid" id="modal-fields"></div>
+
+      <hr class="divider">
+      <div class="section-title">📦 Line Items</div>
+      <div id="modal-line-items"></div>
+
+      <hr class="divider">
+      <div class="section-title">🏭 Post to ERP</div>
+      <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+        <select id="erp-select" style="background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 6px; font-size: 13px;">
+          <option value="mock">Mock ERP (Demo)</option>
+          <option value="odoo">Odoo</option>
+          <option value="quickbooks">QuickBooks</option>
+          <option value="sap">SAP</option>
+        </select>
+        <button class="btn btn-success" id="post-erp-btn" onclick="postToERP()">🚀 Post to ERP</button>
+      </div>
+
+      <hr class="divider">
+      <div class="actions-row">
+        <button class="btn btn-primary" onclick="saveCorrections()">💾 Save & Approve</button>
+        <button class="btn btn-danger" onclick="rejectInvoice()">✕ Reject</button>
+        <button class="btn btn-secondary" onclick="document.getElementById('review-modal').style.display='none'">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast" style="display:none"></div>
+
+<script>
+const API = 'http://localhost:8000/api/v1';
+let currentInvoiceId = null;
+let currentInvoiceData = null;
+
+// ── API Helpers ──────────────────────────────────────────
+async function api(path, opts = {}) {
+  try {
+    const res = await fetch(API + path, {
+      headers: { 'Content-Type': 'application/json', ...opts.headers },
+      ...opts
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return await res.json();
+  } catch (e) {
+    console.error('API error:', e);
+    throw e;
+  }
+}
+
+// ── Init ─────────────────────────────────────────────────
+async function init() {
+  try {
+    await fetch('http://localhost:8000/health');
+    document.getElementById('api-status').innerHTML = '🟢 Backend connected';
+  } catch {
+    document.getElementById('api-status').innerHTML = '🔴 Backend offline';
+    document.getElementById('api-status').style.color = 'var(--danger)';
+  }
+  loadStats();
+  loadRecentInvoices();
+}
+
+// ── Navigation ───────────────────────────────────────────
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + page).style.display = 'flex';
+  document.getElementById('page-' + page).style.flexDirection = 'column';
+  document.getElementById('nav-' + (page === 'posted' ? 'posted' : page)).classList.add('active');
+
+  if (page === 'dashboard') { loadStats(); loadRecentInvoices(); }
+  if (page === 'invoices') loadInvoices();
+  if (page === 'review') loadReview();
+  if (page === 'posted') loadPosted();
+}
+
+// ── Stats ────────────────────────────────────────────────
+async function loadStats() {
+  try {
+    const data = await api('/erp/stats');
+    document.getElementById('stat-total').textContent = data.total_invoices;
+    document.getElementById('stat-review').textContent = data.pending_review;
+    document.getElementById('stat-approved').textContent = data.approved;
+    document.getElementById('stat-posted').textContent = data.posted_to_erp;
+    document.getElementById('stat-automation').textContent = data.automation_rate + '%';
+    document.getElementById('review-count').textContent = data.pending_review;
+  } catch {}
+}
+
+// ── Invoice Table Renderer ───────────────────────────────
+function renderInvoiceTable(invoices, container, showReviewBtn = false, showPostBtn = false) {
+  if (!invoices.length) {
+    container.innerHTML = '<div class="empty-state"><div class="icon">📭</div><p>No invoices found</p></div>';
+    return;
+  }
+  let rows = invoices.map(inv => `
+    <tr>
+      <td class="mono">${inv.id.substring(0, 8)}…</td>
+      <td>${inv.vendor_name || '<span style="color:var(--muted)">—</span>'}</td>
+      <td class="mono">${inv.invoice_number || '—'}</td>
+      <td class="mono">${inv.total_amount != null ? '$' + Number(inv.total_amount).toLocaleString('en', {minimumFractionDigits:2}) : '—'}</td>
+      <td>${renderConfidence(inv.confidence_score)}</td>
+      <td>${renderStatus(inv.status)}</td>
+      <td class="mono" style="font-size:11px;color:var(--muted)">${inv.created_at ? new Date(inv.created_at).toLocaleDateString() : '—'}</td>
+      <td>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-secondary btn-sm" onclick="openReview('${inv.id}')">👁 View</button>
+          ${showReviewBtn && inv.status === 'review' ? `<button class="btn btn-primary btn-sm" onclick="openReview('${inv.id}')">✏️ Review</button>` : ''}
+          ${showPostBtn && inv.status === 'approved' ? `<button class="btn btn-success btn-sm" onclick="quickPost('${inv.id}')">🚀 Post</button>` : ''}
+        </div>
+      </td>
+    </tr>
+  `).join('');
+
+  container.innerHTML = `
+    <table>
+      <thead><tr>
+        <th>ID</th><th>Vendor</th><th>Invoice #</th><th>Amount</th><th>Confidence</th><th>Status</th><th>Date</th><th>Action</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+function renderConfidence(score) {
+  if (score == null) return '<span style="color:var(--muted)">—</span>';
+  const pct = Math.round(score * 100);
+  const cls = pct >= 95 ? 'conf-high' : pct >= 80 ? 'conf-mid' : 'conf-low';
+  return `<div class="conf-bar">
+    <div class="conf-track"><div class="conf-fill ${cls}" style="width:${pct}%"></div></div>
+    <span class="conf-text">${pct}%</span>
+  </div>`;
+}
+
+function renderStatus(status) {
+  const map = { pending:'badge-pending', processing:'badge-processing', review:'badge-review', approved:'badge-approved', posted:'badge-posted', rejected:'badge-rejected', error:'badge-error' };
+  const icons = { pending:'⏳', processing:'⚙️', review:'🔍', approved:'✅', posted:'🚀', rejected:'❌', error:'⚠️' };
+  return `<span class="badge ${map[status] || 'badge-pending'}">${icons[status] || ''} ${status}</span>`;
+}
+
+// ── Load Pages ───────────────────────────────────────────
+async function loadRecentInvoices() {
+  try {
+    const data = await api('/invoices/?limit=8');
+    renderInvoiceTable(data.invoices, document.getElementById('recent-invoices-table'), true, true);
+  } catch {}
+}
+
+async function loadInvoices() {
+  const status = document.getElementById('status-filter')?.value || '';
+  try {
+    const data = await api(`/invoices/?limit=50${status ? '&status=' + status : ''}`);
+    renderInvoiceTable(data.invoices, document.getElementById('invoices-table'), true, true);
+  } catch {}
+}
+
+async function loadReview() {
+  try {
+    const data = await api('/review/pending');
+    renderInvoiceTable(data.invoices, document.getElementById('review-table'), true, false);
+    document.getElementById('review-count').textContent = data.total;
+  } catch {}
+}
+
+async function loadPosted() {
+  try {
+    const data = await api('/invoices/?status=posted&limit=50');
+    renderInvoiceTable(data.invoices, document.getElementById('posted-table'), false, false);
+  } catch {}
+}
+
+// ── Review Modal ─────────────────────────────────────────
+async function openReview(invoiceId) {
+  currentInvoiceId = invoiceId;
+  try {
+    const inv = await api('/invoices/' + invoiceId);
+    currentInvoiceData = inv;
+    populateModal(inv);
+    document.getElementById('review-modal').style.display = 'flex';
+  } catch(e) {
+    showToast('Failed to load invoice', 'error');
+  }
+}
+
+function populateModal(inv) {
+  document.getElementById('modal-title').textContent = `Invoice: ${inv.invoice_number || inv.id.substring(0,8)}`;
+  document.getElementById('modal-subtitle').textContent = `Vendor: ${inv.vendor_name || '—'} | Status: ${inv.status}`;
+
+  const pct = inv.confidence_score ? Math.round(inv.confidence_score * 100) : 0;
+  const cls = pct >= 95 ? 'badge-approved' : pct >= 80 ? 'badge-review' : 'badge-rejected';
+  document.getElementById('modal-confidence-badge').innerHTML = `<span class="badge ${cls}">🎯 ${pct}% confidence</span>`;
+
+  // Validation errors display
+  const errDiv = document.getElementById('modal-validation-errors');
+  errDiv.innerHTML = '';
+
+  // Fields
+  const fieldsMap = {};
+  (inv.fields || []).forEach(f => fieldsMap[f.field_name] = f);
+
+  function fieldConf(name) {
+    const f = fieldsMap[name];
+    if (!f) return '';
+    const pct = Math.round((f.confidence || 0) * 100);
+    const dot = pct >= 95 ? 'dot-high' : pct >= 80 ? 'dot-mid' : 'dot-low';
+    return `<div class="field-confidence"><span class="dot ${dot}"></span><span class="conf-text">${pct}% confidence</span></div>`;
+  }
+
+  document.getElementById('modal-fields').innerHTML = `
+    <div class="field-group">
+      <label class="field-label">Vendor Name</label>
+      <input class="field-input" id="edit-vendor" value="${inv.vendor_name || ''}">
+      ${fieldConf('vendor_name')}
+    </div>
+    <div class="field-group">
+      <label class="field-label">Invoice Number</label>
+      <input class="field-input" id="edit-invnum" value="${inv.invoice_number || ''}">
+      ${fieldConf('invoice_number')}
+    </div>
+    <div class="field-group">
+      <label class="field-label">Invoice Date</label>
+      <input class="field-input" id="edit-date" type="date" value="${inv.invoice_date || ''}">
+      ${fieldConf('invoice_date')}
+    </div>
+    <div class="field-group">
+      <label class="field-label">Currency</label>
+      <input class="field-input" id="edit-currency" value="${inv.currency || 'USD'}">
+    </div>
+    <div class="field-group">
+      <label class="field-label">Subtotal</label>
+      <input class="field-input" id="edit-subtotal" type="number" step="0.01" value="${inv.subtotal || 0}">
+      ${fieldConf('subtotal')}
+    </div>
+    <div class="field-group">
+      <label class="field-label">Tax Amount</label>
+      <input class="field-input" id="edit-tax" type="number" step="0.01" value="${inv.tax_amount || 0}">
+      ${fieldConf('tax_amount')}
+    </div>
+    <div class="field-group">
+      <label class="field-label">Discount</label>
+      <input class="field-input" id="edit-discount" type="number" step="0.01" value="${inv.discount || 0}">
+    </div>
+    <div class="field-group">
+      <label class="field-label">Total Amount</label>
+      <input class="field-input" id="edit-total" type="number" step="0.01" value="${inv.total_amount || 0}">
+      ${fieldConf('total_amount')}
+    </div>
+  `;
+
+  // Line items
+  const items = inv.line_items || [];
+  const rows = items.map((item, i) => `
+    <tr>
+      <td><input value="${item.description || ''}" id="li-desc-${i}" onchange="updateLineItem()"></td>
+      <td><input type="number" value="${item.quantity || 1}" id="li-qty-${i}" style="width:60px" onchange="updateLineItem()"></td>
+      <td><input type="number" step="0.01" value="${item.unit_price || 0}" id="li-price-${i}" style="width:90px" onchange="updateLineItem()"></td>
+      <td><input type="number" step="0.01" value="${item.amount || 0}" id="li-amt-${i}" style="width:90px"></td>
+      <td>${renderConfidence(item.confidence)}</td>
+    </tr>
+  `).join('');
+
+  document.getElementById('modal-line-items').innerHTML = items.length ? `
+    <table class="line-items-table">
+      <thead><tr><th>Description</th><th>Qty</th><th>Unit Price</th><th>Amount</th><th>Confidence</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  ` : '<div style="color:var(--muted);font-size:13px;">No line items extracted</div>';
+
+  // Show/hide post button based on status
+  const postBtn = document.getElementById('post-erp-btn');
+  postBtn.disabled = inv.status !== 'approved';
+  postBtn.title = inv.status !== 'approved' ? 'Save & Approve first' : '';
+}
+
+function updateLineItem() {
+  // Auto-calculate amount from qty * price for any changed row
+}
+
+async function saveCorrections() {
+  const payload = {
+    vendor_name: document.getElementById('edit-vendor')?.value,
+    invoice_number: document.getElementById('edit-invnum')?.value,
+    invoice_date: document.getElementById('edit-date')?.value,
+    total_amount: parseFloat(document.getElementById('edit-total')?.value) || 0,
+    subtotal: parseFloat(document.getElementById('edit-subtotal')?.value) || 0,
+    tax_amount: parseFloat(document.getElementById('edit-tax')?.value) || 0,
+    discount: parseFloat(document.getElementById('edit-discount')?.value) || 0,
+    reviewer: 'reviewer',
+    field_corrections: {
+      vendor_name: document.getElementById('edit-vendor')?.value,
+      invoice_number: document.getElementById('edit-invnum')?.value,
+      total_amount: document.getElementById('edit-total')?.value,
+    }
+  };
+
+  // Collect line items
+  const items = [];
+  let i = 0;
+  while (document.getElementById(`li-desc-${i}`) !== null) {
+    items.push({
+      description: document.getElementById(`li-desc-${i}`).value,
+      quantity: parseFloat(document.getElementById(`li-qty-${i}`).value) || 1,
+      unit_price: parseFloat(document.getElementById(`li-price-${i}`).value) || 0,
+      amount: parseFloat(document.getElementById(`li-amt-${i}`).value) || 0,
+    });
+    i++;
+  }
+  if (items.length) payload.line_items = items;
+
+  try {
+    await api(`/review/${currentInvoiceId}/correct`, { method: 'POST', body: JSON.stringify(payload) });
+    showToast('Invoice approved successfully!', 'success');
+    document.getElementById('review-modal').style.display = 'none';
+    loadStats();
+    loadRecentInvoices();
+    // Re-enable post button
+    const postBtn = document.getElementById('post-erp-btn');
+    if (postBtn) postBtn.disabled = false;
+  } catch(e) {
+    showToast('Failed to save corrections', 'error');
+  }
+}
+
+async function rejectInvoice() {
+  if (!confirm('Reject this invoice?')) return;
+  try {
+    await api(`/review/${currentInvoiceId}/reject?reviewer=reviewer`, { method: 'POST' });
+    showToast('Invoice rejected', 'error');
+    document.getElementById('review-modal').style.display = 'none';
+    loadStats(); loadRecentInvoices();
+  } catch {
+    showToast('Failed to reject', 'error');
+  }
+}
+
+async function postToERP() {
+  const erp = document.getElementById('erp-select').value;
+  try {
+    const result = await api(`/erp/post/${currentInvoiceId}`, {
+      method: 'POST',
+      body: JSON.stringify({ erp_system: erp, reviewer: 'reviewer' })
+    });
+    showToast(`Posted to ${erp}! Ref: ${result.erp_reference}`, 'success');
+    document.getElementById('review-modal').style.display = 'none';
+    loadStats(); loadRecentInvoices();
+  } catch(e) {
+    showToast('ERP posting failed: ' + e.message, 'error');
+  }
+}
+
+async function quickPost(invoiceId) {
+  try {
+    await api(`/erp/post/${invoiceId}`, {
+      method: 'POST',
+      body: JSON.stringify({ erp_system: 'mock', reviewer: 'system' })
+    });
+    showToast('Posted to ERP!', 'success');
+    loadStats(); loadRecentInvoices();
+  } catch(e) {
+    showToast('Posting failed: ' + e.message, 'error');
+  }
+}
+
+function closeModal(e) {
+  if (e.target.id === 'review-modal') document.getElementById('review-modal').style.display = 'none';
+}
+
+// ── File Upload ──────────────────────────────────────────
+function handleDragOver(e) { e.preventDefault(); document.getElementById('upload-zone').classList.add('dragover'); }
+function handleDragLeave() { document.getElementById('upload-zone').classList.remove('dragover'); }
+function handleDrop(e) { e.preventDefault(); handleDragLeave(); const file = e.dataTransfer.files[0]; if (file) uploadFile(file); }
+function handleFileSelect(e) { const file = e.target.files[0]; if (file) uploadFile(file); }
+
+async function uploadFile(file) {
+  if (!file.name.endsWith('.pdf')) { showToast('Only PDF files supported', 'error'); return; }
+
+  const statusDiv = document.getElementById('upload-status');
+  const content = document.getElementById('upload-status-content');
+  statusDiv.style.display = 'block';
+  content.innerHTML = `<div style="display:flex;align-items:center;gap:12px;"><div class="pulse" style="font-size:20px;">⚙️</div><div><div style="font-weight:600;">Uploading ${file.name}…</div><div style="font-size:12px;color:var(--muted)">Starting AI extraction</div></div></div>`;
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    const res = await fetch(`${API}/invoices/upload`, { method: 'POST', body: formData });
+    const data = await res.json();
+
+    content.innerHTML = `
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+        <div style="font-size:20px;">⚙️</div>
+        <div>
+          <div style="font-weight:600;">Processing…</div>
+          <div style="font-size:12px;color:var(--muted)">Invoice ID: <span style="font-family:var(--mono)">${data.id}</span></div>
+        </div>
+        <span class="badge badge-processing">AI Extracting</span>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="pollInvoice('${data.id}', this)">📊 Check Status</button>
+    `;
+
+    // Auto-poll after 2 seconds
+    setTimeout(() => pollInvoice(data.id, null, content), 2000);
+
+  } catch(e) {
+    content.innerHTML = `<div style="color:var(--danger);">❌ Upload failed. Is the backend running? <code>cd backend && uvicorn app.main:app --reload</code></div>`;
+  }
+}
+
+async function pollInvoice(invoiceId, btn, container) {
+  const target = container || document.getElementById('upload-status-content');
+  try {
+    const inv = await api('/invoices/' + invoiceId);
+
+    if (inv.status === 'processing' || inv.status === 'pending') {
+      target.innerHTML = `
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+          <div class="pulse" style="font-size:20px;">⚙️</div>
+          <div><div style="font-weight:600;">AI is extracting data…</div><div style="font-size:12px;color:var(--muted)">This takes a few seconds</div></div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="pollInvoice('${invoiceId}', this)">🔄 Refresh</button>`;
+      setTimeout(() => pollInvoice(invoiceId, null, target), 2000);
+    } else {
+      const pct = inv.confidence_score ? Math.round(inv.confidence_score * 100) : 0;
+      target.innerHTML = `
+        <div style="margin-bottom:16px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+            <span style="font-size:20px;">✅</span>
+            <div><div style="font-weight:600;">Extraction complete!</div>${renderStatus(inv.status)}</div>
+          </div>
+          <div class="field-grid" style="gap:10px;margin-bottom:12px;">
+            <div style="font-size:13px;"><span style="color:var(--muted)">Vendor:</span> ${inv.vendor_name || '—'}</div>
+            <div style="font-size:13px;"><span style="color:var(--muted)">Invoice #:</span> ${inv.invoice_number || '—'}</div>
+            <div style="font-size:13px;"><span style="color:var(--muted)">Total:</span> $${Number(inv.total_amount || 0).toLocaleString()}</div>
+            <div style="font-size:13px;"><span style="color:var(--muted)">Confidence:</span> ${pct}%</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <button class="btn btn-primary btn-sm" onclick="openReview('${invoiceId}')">✏️ Review & Edit</button>
+          <button class="btn btn-secondary btn-sm" onclick="showPage('invoices')">📋 View All</button>
+        </div>`;
+      loadStats();
+      showToast('Invoice extracted successfully!', 'success');
+    }
+  } catch(e) {
+    target.innerHTML = `<div style="color:var(--danger);">Error checking status</div>`;
+  }
+}
+
+// ── Toast ────────────────────────────────────────────────
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast toast-${type}`;
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 3500);
+}
+
+// ── Start ────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+{
+  "meta": {
+    "file_name": "phase1_clean_digital.pdf",
+    "file_path": "phase1_clean_digital.pdf",
+    "processed_at": "2026-06-07T22:54:50.703494",
+    "extraction_model": "meta-llama/llama-4-scout-17b-16e-instruct",
+    "attempts_taken": 1,
+    "status": "SUCCESS"
+  },
+  "routing": {
+    "route": "MANUAL_REVIEW",
+    "route_reason": "Confidence 71.2% < 80% threshold. Full manual review required (HITL)."
+  },
+  "confidence": {
+    "overall": 0.7117,
+    "completeness": 0.9,
+    "arithmetic_ok": false,
+    "arithmetic_detail": "  Line items sum (1737000.00) = subtotal (1737000.00) |   subtotal(1737000.0) + tax(295290.0) = 2032290.0 ≠ total(1982290.0) |   All 6 line items arithmetic correct",
+    "per_field": [
+      {
+        "field": "vendor_name",
+        "score": 0.45,
+        "label": "LOW",
+        "reason": "Vendor not in registry"
+      },
+      {
+        "field": "invoice_number",
+        "score": 0.75,
+        "label": "LOW",
+        "reason": "Extracted — base score"
+      },
+      {
+        "field": "invoice_date",
+        "score": 0.8,
+        "label": "MEDIUM",
+        "reason": "Extracted — base score"
+      },
+      {
+        "field": "total_amount",
+        "score": 0.4,
+        "label": "LOW",
+        "reason": "subtotal+tax doesn't match total"
+      },
+      {
+        "field": "currency",
+        "score": 0.82,
+        "label": "MEDIUM",
+        "reason": "Extracted — base score"
+      },
+      {
+        "field": "line_items",
+        "score": 0.88,
+        "label": "MEDIUM",
+        "reason": "All line items arithmetic correct"
+      },
+      {
+        "field": "vendor_address",
+        "score": 0.55,
+        "label": "LOW",
+        "reason": "Extracted — base score"
+      },
+      {
+        "field": "vendor_tax_id",
+        "score": 0.5,
+        "label": "LOW",
+        "reason": "Not present — may not exist on invoice"
+      },
+      {
+        "field": "due_date",
+        "score": 0.8,
+        "label": "MEDIUM",
+        "reason": "Extracted — base score"
+      },
+      {
+        "field": "subtotal",
+        "score": 0.88,
+        "label": "MEDIUM",
+        "reason": "Confirmed by line items sum"
+      },
+      {
+        "field": "tax_amount",
+        "score": 0.72,
+        "label": "LOW",
+        "reason": "Extracted — base score"
+      },
+      {
+        "field": "tax_rate",
+        "score": 0.75,
+        "label": "LOW",
+        "reason": "Extracted — base score"
+      },
+      {
+        "field": "po_number",
+        "score": 0.55,
+        "label": "LOW",
+        "reason": "Extracted — base score"
+      },
+      {
+        "field": "payment_terms",
+        "score": 0.5,
+        "label": "LOW",
+        "reason": "Not present — may not exist on invoice"
+      }
+    ]
+  },
+  "validation": {
+    "passed": true,
+    "duplicate_flag": false,
+    "errors": [],
+    "warnings": [
+      "Optional field not found: 'vendor_tax_id'",
+      "Optional field not found: 'payment_terms'",
+      "subtotal(1737000.0) + tax(295290.0) = 2032290.0 ≠ total(1982290.0)",
+      "Vendor 'TechNova Solutions Pvt Ltd' not in registry. May be a new vendor — verify manually."
+    ]
+  },
+  "invoice": {
+    "vendor_name": "TechNova Solutions Pvt Ltd",
+    "vendor_address": "Plot 12, Korangi Industrial Area, Karachi",
+    "vendor_tax_id": null,
+    "invoice_number": "INV-2025-00501",
+    "invoice_date": "2025-01-20",
+    "due_date": "2025-02-20",
+    "po_number": "PO-TN-1100",
+    "payment_terms": null,
+    "subtotal": 1737000.0,
+    "tax_amount": 295290.0,
+    "tax_rate": 0.17,
+    "total_amount": 1982290.0,
+    "currency": "PKR",
+    "line_items": [
+      {
+        "description": "Dell Latitude 5540 Laptop (i7, 16GB, 512GB SSD)",
+        "quantity": 3.0,
+        "unit_price": 185000.0,
+        "amount": 555000.0
+      },
+      {
+        "description": "HP EliteDesk 800 G9 Desktop PC",
+        "quantity": 2.0,
+        "unit_price": 155000.0,
+        "amount": 310000.0
+      },
+      {
+        "description": "LG 27\" UltraWide 4K Monitor",
+        "quantity": 5.0,
+        "unit_price": 82000.0,
+        "amount": 410000.0
+      },
+      {
+        "description": "Logitech MX Master 3 Mouse",
+        "quantity": 10.0,
+        "unit_price": 12500.0,
+        "amount": 125000.0
+      },
+      {
+        "description": "Keychron K2 Pro Mechanical Keyboard",
+        "quantity": 10.0,
+        "unit_price": 18500.0,
+        "amount": 185000.0
+      },
+      {
+        "description": "USB-C Docking Station — Dell WD19",
+        "quantity": 4.0,
+        "unit_price": 38000.0,
+        "amount": 152000.0
+      }
+    ]
+  },
+  "error": null
+}
