@@ -1,27 +1,27 @@
 {
   "meta": {
-    "file_name": "phase2_scanned_good.pdf",
-    "file_path": "phase2_scanned_good.pdf",
-    "processed_at": "2026-06-08T02:49:21.431870",
+    "file_name": "phase2_scanned_good_20260614_183101.pdf",
+    "file_path": "phase2_scanned_good_20260614_183101.pdf",
+    "processed_at": "2026-06-14T18:31:01.731872",
     "extraction_model": "meta-llama/llama-4-scout-17b-16e-instruct",
     "attempts_taken": 1,
-    "status": "SUCCESS"
+    "status": "PARTIAL"
   },
   "routing": {
     "route": "MANUAL_REVIEW",
-    "route_reason": "Confidence 74.6% < 80% threshold. Full manual review required (HITL)."
+    "route_reason": "Forced MANUAL_REVIEW due to 1 validation error(s): Required field missing: 'currency'"
   },
   "confidence": {
-    "overall": 0.7458,
-    "completeness": 0.8,
+    "overall": 0.6267,
+    "completeness": 0.7,
     "arithmetic_ok": false,
-    "arithmetic_detail": "  Line items sum (230200.00) ≠ subtotal (381700.00), diff=151500.00 |   All 5 line items arithmetic correct",
+    "arithmetic_detail": "  Line items sum (230200.00) ≠ subtotal (281700.00), diff=51500.00 |   All 5 line items arithmetic correct",
     "per_field": [
       {
         "field": "vendor_name",
-        "score": 0.9,
-        "label": "MEDIUM",
-        "reason": "Vendor confirmed in registry"
+        "score": 0.65,
+        "label": "LOW",
+        "reason": "Extracted — base score"
       },
       {
         "field": "invoice_number",
@@ -43,9 +43,9 @@
       },
       {
         "field": "currency",
-        "score": 0.82,
-        "label": "MEDIUM",
-        "reason": "Extracted — base score"
+        "score": 0.0,
+        "label": "LOW",
+        "reason": "Field not found in invoice"
       },
       {
         "field": "line_items",
@@ -104,32 +104,35 @@
     ]
   },
   "validation": {
-    "passed": true,
+    "passed": false,
     "duplicate_flag": false,
-    "errors": [],
+    "errors": [
+      "Required field missing: 'currency'"
+    ],
     "warnings": [
       "Optional field not found: 'vendor_tax_id'",
       "Optional field not found: 'tax_amount'",
       "Optional field not found: 'tax_rate'",
       "Optional field not found: 'payment_terms'",
-      "Line items sum (230200.00) ≠ subtotal (381700.00), diff=151500.00"
+      "Line items sum (230200.00) ≠ subtotal (281700.00), diff=51500.00",
+      "Vendor registry is empty. Cannot validate 'Datastream Technologies'. Run register_vendor() to build the registry."
     ]
   },
   "invoice": {
     "vendor_name": "Datastream Technologies",
-    "vendor_address": "Office 7, Gulberg III, Lahore",
+    "vendor_address": "Office 7, Gulberg III, Lahore | 042-3500-1234 | billing@datastream.pk",
     "vendor_tax_id": null,
     "invoice_number": "DS-2025-0089",
     "invoice_date": "2025-02-05",
     "due_date": "2025-03-07",
     "po_number": "PO-DST 4421",
     "payment_terms": null,
-    "subtotal": 381700.0,
+    "subtotal": 281700.0,
     "tax_amount": null,
     "tax_rate": null,
     "discount": null,
-    "total_amount": 381700.0,
-    "currency": "PKR",
+    "total_amount": 281700.0,
+    "currency": null,
     "line_items": [
       {
         "description": "Cloud Server Hosting (12 months)",
@@ -156,7 +159,7 @@
         "amount": 65000.0
       },
       {
-        "description": "24/7 Support Contract - Annual",
+        "description": "IT Support Contract - Annual",
         "quantity": 1.0,
         "unit_price": 80000.0,
         "amount": 80000.0

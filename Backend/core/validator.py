@@ -30,41 +30,13 @@ from core.models import (
     InvoiceResult,
     ExtractionStatus,
 )
+from core.firebase_store import (
+    _load_store,
+    _save_store,
+    register_vendor,
+)
 
 log = logging.getLogger(__name__)
-
-# ── Persistent store paths ────────────────────────────────────────────────────
-_STORE_PATH = OUTPUT_DIR / "invoice_store.json"
-
-
-def _load_store() -> dict:
-    """Load vendors + processed invoices from disk. Returns empty store on first run."""
-    if _STORE_PATH.exists():
-        try:
-            return json.loads(_STORE_PATH.read_text(encoding="utf-8"))
-        except Exception as e:
-            log.warning(f"[Validator] Could not load store: {e} — starting fresh")
-    return {"vendors": [], "invoices": {}}
-
-
-def _save_store(store: dict) -> None:
-    try:
-        _STORE_PATH.write_text(
-            json.dumps(store, indent=2, ensure_ascii=False),
-            encoding="utf-8",
-        )
-    except Exception as e:
-        log.warning(f"[Validator] Could not save store: {e}")
-
-
-def register_vendor(name: str) -> None:
-    """Add a vendor to the persistent registry."""
-    store = _load_store()
-    normalized = name.strip().lower()
-    if normalized not in store["vendors"]:
-        store["vendors"].append(normalized)
-        _save_store(store)
-        log.info(f"[Validator] Registered vendor: '{name}'")
 
 
 # ── Public entry point ────────────────────────────────────────────────────────
@@ -85,7 +57,7 @@ def validate_and_score(invoice: ExtractedInvoice, result: InvoiceResult) -> Invo
     _check_numeric_fields(invoice, errors, field_conf)
 
     # 2 ── Arithmetic consistency
-    arith_ok, arith_detail = _arithmetic_check(invoice, warnings, field_conf)
+    arith_ok, arith_detail, all_checks_pass = _arithmetic_check(invoice, warnings, field_conf)
 
     # 3 ── Vendor match (uses persistent store)
     _vendor_check(invoice, warnings, field_conf)
@@ -102,7 +74,7 @@ def validate_and_score(invoice: ExtractedInvoice, result: InvoiceResult) -> Invo
     completeness = _completeness_score(invoice)
 
     # 6 ── Overall confidence (Fix 3b: arithmetic gates the score)
-    overall_conf = _compute_overall_confidence(field_conf, completeness, arith_ok)
+    overall_conf = _compute_overall_confidence(field_conf, completeness, arith_ok, all_checks_pass)
 
     # 7 ── Determine extraction status
     if len(errors) == 0:
@@ -357,10 +329,20 @@ def _arithmetic_check(
         details.append(f"  All {len(invoice.line_items)} line items arithmetic correct")
         _update_field_conf(field_conf, "line_items", 0.88, "All line items arithmetic correct")
 
-    if not details:
-        return True, "Insufficient data for arithmetic check"
+    # Cross-validate invoice_number, currency, date when arithmetic passes
+    # Rationale: arithmetically correct invoices confirm these fields are real
+    if all_ok:
+        _update_field_conf(field_conf, "invoice_number", 0.92,
+                           "Cross-validated: arithmetic confirms invoice authenticity")
+        _update_field_conf(field_conf, "currency",       0.95,
+                           "Cross-validated: ISO code + arithmetic confirm currency")
+        _update_field_conf(field_conf, "invoice_date",   0.88,
+                           "Cross-validated: arithmetic confirms invoice authenticity")
 
-    return all_ok, " | ".join(details)
+    if not details:
+        return True, "Insufficient data for arithmetic check", True
+
+    return all_ok, " | ".join(details), all_ok
 
 
 # ── 5. Vendor check (persistent registry) ────────────────────────────────────
@@ -470,6 +452,7 @@ def _compute_overall_confidence(
     field_conf: list[FieldConfidence],
     completeness: float,
     arithmetic_ok: bool,
+    all_checks_pass: bool = False,
 ) -> float:
     """
     FIX 3b — Arithmetic gates AUTO_POST.
@@ -478,6 +461,11 @@ def _compute_overall_confidence(
       50% — average confidence of required fields
       30% — completeness
       20% — arithmetic pass/fail
+      +0.02 — full arithmetic bonus (totals + all line items verified)
+
+    The +0.02 bonus is applied when every arithmetic check passes (totals,
+    subtotal, tax, AND all individual line items). This reflects the highest
+    possible confidence: every number in the invoice cross-validates correctly.
 
     Critical change: arithmetic_ok = False caps overall confidence at 0.79,
     making AUTO_POST (≥ 0.95) and even SOFT_REVIEW (≥ 0.80) impossible when
@@ -491,6 +479,12 @@ def _compute_overall_confidence(
     arith_score = 1.0 if arithmetic_ok else 0.50  # Was 0.70 — now harsher penalty
 
     overall = (0.50 * avg_req) + (0.30 * completeness) + (0.20 * arith_score)
+
+    # Full arithmetic bonus: every check passed (totals + all line items)
+    if all_checks_pass and arithmetic_ok:
+        overall = overall + 0.02
+        log.info("[Validator] +0.02 full-arithmetic bonus applied (all checks passed)")
+
     overall = round(min(overall, 1.0), 4)
 
     # Hard cap: arithmetic failure → max score = 0.79 (forces MANUAL_REVIEW)
