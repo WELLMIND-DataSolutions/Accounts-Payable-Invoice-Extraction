@@ -10,7 +10,9 @@
 
 An automated system that reads invoices, checks them for accuracy, and decides on its own whether an invoice can be posted directly, needs a quick check, or requires manual correction — removing repetitive manual invoice entry from the accounts payable workflow.
 
-![Pipeline Flow](./pipeline_flow.png)
+<p align="center">
+  <img src="./pipeline_flow.png" width="520" alt="Pipeline Flow">
+</p>
 
 ---
 
