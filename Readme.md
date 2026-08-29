@@ -1,66 +1,76 @@
-<p align="center">
-  <img src="./favicon.png" width="72" alt="Invoice RPA logo">
-</p>
+Accounts Payable Invoice Extraction
+  <img src="./workflow.png" alt="Workflow Diagram" width="100%"/>
 
-<h1 align="center">Invoice RPA — Intelligent Invoice Processing System</h1>
+Overview
 
-<p align="center">
-  <a href="https://invoice-rpa-pi.vercel.app/"><b>🔗 Live Demo</b></a>
-</p>
+Accounts Payable Invoice Extraction is a document processing system designed to extract important information from invoices and convert it into structured data.
 
-An automated system that reads invoices, checks them for accuracy, and decides on its own whether an invoice can be posted directly, needs a quick check, or requires manual correction — removing repetitive manual invoice entry from the accounts payable workflow.
+The system takes invoice documents as input, processes the document content, extracts relevant invoice fields, checks the extracted information, and produces a structured output that can be used for further accounts payable processing.
 
-<p align="center">
-  <img src="./pipeline_flow.png" width="520" alt="Pipeline Flow">
-</p>
+The main purpose of the project is to automate repetitive invoice data extraction and reduce the need for manual entry.
 
----
+Aim
+Automate invoice information extraction
+Extract important fields from invoice documents
+Convert unstructured invoice information into structured data
+Validate extracted information
+Identify incomplete or incorrect extraction results
+Produce structured output for further processing
+Key Features
+Invoice Input — Accepts invoice documents for processing
+Document Processing — Processes the invoice content before extraction
+Information Extraction — Identifies and extracts relevant invoice information
+Field Extraction — Extracts important details such as invoice information, customer details, dates, amounts, and charges
+Data Validation — Checks extracted information for completeness and correctness
+Structured Data Generation — Organizes extracted information into a consistent structure
+Output Generation — Produces the extracted invoice information in a usable output format
+Benefits
+Reduces Manual Effort — Minimizes repetitive invoice data entry
+Improves Accuracy — Reduces errors caused by manual extraction
+Faster Processing — Speeds up the invoice processing workflow
+Consistent Data — Produces invoice information in a standardized structure
+Handles Multiple Invoices — Supports processing of invoice documents systematically
+Improves Productivity — Allows accounts payable teams to spend less time on repetitive extraction tasks
+Workflow
 
-## The Problem
+The system follows this overall process:
 
-Manually processing invoices is slow, repetitive, and error-prone. Every invoice has to be opened, read, checked for correct totals, matched against a vendor, and then entered into the system by hand. As invoice volume grows, this becomes a bottleneck — mistakes slip through, review takes hours, and finance teams spend most of their time on data entry instead of actual decision-making.
+Invoice Document → Document Processing → Data Extraction → Data Validation → Structured Data → Output
 
-## The Solution
+Workflow Steps
 
-Invoice RPA automates the entire journey of an invoice — from the moment it's uploaded to the moment it's ready for the accounting system. The system reads the invoice, verifies that the numbers add up, checks the vendor against a known registry, scores how confident it is in the extracted data, and then automatically routes the invoice:
+1. Invoice Ingestion
+Invoice documents are provided to the system as input.
 
-- **High confidence** → posted straight through, no human involved
-- **Medium confidence** → flagged for a quick review
-- **Low confidence or errors** → sent to a human reviewer for correction
+2. Document Processing
+The invoice document is processed and prepared so that its information can be analyzed.
 
-Every correction made by a human feeds back into the system, so vendors and patterns it has seen before are recognized faster next time.
+3. Data Extraction
+Relevant information is identified and extracted from the invoice, including invoice details, customer information, dates, amounts, and other required fields.
 
-## What Makes It Different
+4. Data Validation
+The extracted information is checked to determine whether the required data has been extracted correctly and completely.
 
-- **Decides for itself** — it doesn't just extract data, it judges how reliable that data is and acts accordingly, instead of dumping everything into a review queue.
-- **Learns from corrections** — human fixes are not thrown away; they train the vendor registry so future invoices from the same vendor are trusted more.
-- **Math-aware, not just text-aware** — it doesn't just read numbers, it checks whether they actually add up before trusting them.
-- **Full transparency** — every action, decision, and confidence score is logged, so nothing is a black box.
-- **One system, two views** — a processing engine underneath, and a clean human-review dashboard on top, working off the same data.
+5. Validation Decision
 
----
+Valid Data: Continue to structured data generation.
+Invalid or Incomplete Data: The invoice information is flagged for correction or further review.
 
-## How It Works
+6. Structured Data Generation
+Validated invoice information is organized into a structured record.
 
-1. An invoice (PDF or image) is uploaded.
-2. The system cleans and prepares the file for reading.
-3. It extracts all key fields — vendor, dates, amounts, line items.
-4. It validates the numbers and checks the vendor against its registry.
-5. It scores its own confidence in the result.
-6. Based on that score, it routes the invoice to the right destination — auto-post, soft review, or manual review.
+7. Output Generation
+The structured invoice information is saved as the final output for further accounts payable processing.
 
----
+Use Cases
+Automated invoice data entry
+Accounts payable processing
+Bulk invoice information extraction
+Financial document processing
+Invoice data digitization
+Converting invoice documents into structured records
+Project Goal
 
-## Dashboard
+The goal of Accounts Payable Invoice Extraction is to transform invoice documents into accurate and structured information while minimizing manual invoice processing.
 
-A quick look at how the system's activity, confidence, and routing decisions are surfaced to the user:
-
-![Dashboard](./dashboard_view.png)
-
-## Review Queue
-
-Invoices that need a human decision land here, with the reason for review clearly stated:
-
-![Review Queue](./review_queue_view.png)
-
----
+Invoice Document → Process → Extract → Validate → Structure → Output
