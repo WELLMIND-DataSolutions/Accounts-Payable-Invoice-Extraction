@@ -1,0 +1,1 @@
+{"timestamp": "2026-06-14T18:31:13.378714", "action": "invoice_uploaded", "invoice_id": "phase2_scanned_good_20260614_183101_20260614_183113_result", "actor": "api", "details": {"file_name": "phase2_scanned_good_20260614_183101.pdf", "route": "MANUAL_REVIEW", "confidence": 0.6267, "status": "PARTIAL"}}

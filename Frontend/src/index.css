@@ -1,0 +1,40 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Invoice RPA — Global Reset & Root Fix
+   Replaces the old index.css completely.
+   All component styling lives in App.jsx via injected <style>.
+═══════════════════════════════════════════════════════════════════ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden; /* shell handles scroll */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* CRITICAL: Remove the old 1126px centred constraint */
+#root {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  text-align: left !important;
+  border: none !important;
+  min-height: 100vh;
+  display: block !important;
+}
+
+/* Base element resets */
+h1, h2, h3, h4, h5, h6, p, button, input, select, textarea {
+  font-family: inherit;
+}
+
+button { cursor: pointer; border: none; background: none; }
+input, select { outline: none; }
+table { border-collapse: collapse; }
+img { display: block; max-width: 100%; }
